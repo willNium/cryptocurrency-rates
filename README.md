@@ -2,4 +2,4 @@
 
 ```brew install jq```
 
-source command
+```source command```
