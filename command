@@ -3,23 +3,38 @@ then
   rm output.txt
   echo "reset ouput"
 fi
-# jan14=1388577600
-# jan214=1388664000
-# sample=(1388664000 1388577600)
-# day=`expr $jan214 - $jan14`
-sample=(1495540800)
-echo $day
-# currencies=('BTC' 'ETH' 'XRP' 'LTC' 'XEM' 'DASH'  'XMR' 'STR' 'STEEM' 'REP' 'GNT' 'SJCX' 'GNO')
-currencies=('BTC' 'ETH')
+
+if [ -z "$1" ]
+  then
+    echo "No from date supplied, starting from Jan 1, 2014"
+    from=1388577600
+    echo $from
+  else
+    from=$1
+    echo "Pulling data starting at: $from"
+fi
+
+if [ -z "$2" ]
+  then
+    echo "No to date supplied, pulling data until the current date"
+    today=$(date +%s)
+    echo $today
+  else
+    today=$2
+    echo "Pulling data until: $today"
+fi
+
+currencies=('BTC' 'ETH' 'XRP' 'LTC' 'XEM' 'DASH'  'XMR' 'STR' 'STEEM' 'REP' 'GNT' 'SJCX' 'GNO')
+
 for i in $currencies
 do
-  echo "before sleep $i"
-  sleep 2 &&
-  echo "after sleep $i"
-  for day in $sample
+  date=$from
+  sleep 10 &&
+  while [ $date -lt $today ]
   do
-    curl https://min-api.cryptocompare.com/data/pricehistorical\?fsym\=${i}\&tsyms\=USD,BTC\&ts\=${day} > response
-    echo $i","$( cat response | jq .$i.USD)","$( cat response | jq .$i.BTC)","$day >> output.txt
+    curl https://min-api.cryptocompare.com/data/pricehistorical\?fsym\=${i}\&tsyms\=USD,BTC\&ts\=${date} > response
+    echo $i","$( cat response | jq .$i.USD)","$( cat response | jq .$i.BTC)","$date >> output.txt
+    date=$[$date+86400]
   done
 done
 
