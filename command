@@ -1,9 +1,11 @@
+# Comment this if you don't want the output text file to be reset before the run
 if [ -e output.txt ]
 then
   rm output.txt
-  echo "reset ouput"
+  echo "clearing ouput from last run"
 fi
 
+# Checking for first argument
 if [ -z "$1" ]
   then
     echo "No from date supplied, starting from Jan 1, 2014"
@@ -14,6 +16,7 @@ if [ -z "$1" ]
     echo "Pulling data starting at: $from"
 fi
 
+# Checking for second argument
 if [ -z "$2" ]
   then
     echo "No to date supplied, pulling data until the current date"
@@ -24,6 +27,7 @@ if [ -z "$2" ]
     echo "Pulling data until: $today"
 fi
 
+# All the currencies of interest
 currencies=('BTC' 'ETH' 'XRP' 'LTC' 'XEM' 'DASH'  'XMR' 'STR' 'STEEM' 'REP' 'GNT' 'SJCX' 'GNO')
 
 for i in $currencies

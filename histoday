@@ -1,0 +1,47 @@
+limit=$[ ($(date +%s) - 1388534400) / (60 * 60 * 24) ]
+
+echo "checking for data directory"
+if [ -e data ]
+then
+  echo "data directory exists"
+else
+  echo "creating the data directory"
+  mkdir data
+fi
+
+# All the currencies of interest
+currencies=('ETH' 'XRP' 'LTC' 'XEM' 'DASH'  'XMR' 'STR' 'STEEM' 'REP' 'GNT' 'SJCX' 'BTC' 'GNO')
+# currencies=('ETH' 'XRP')
+
+# Daily data of interest
+# keys=('high' 'low' 'open' 'close' 'time')
+# for key in $keys
+# do
+#   declare $key
+# done
+
+for i in $currencies
+do
+  echo "currency,high,low,open,close,average,timestamp" > data/$i
+  curl https://min-api.cryptocompare.com/data/histoday\?fsym\=${i}\&tsym\=BTC\&limit\=${limit}\&aggregate\=1\ > response
+  day=0
+  while [ $day -lt $limit ]
+  do
+#     for key in $keys
+#     do
+#       key=$(cat response | jq ".Data["$day"]."$key)
+#     done
+    high=$(cat response | jq ".Data["$day"].high")
+    low=$(cat response | jq ".Data["$day"].low")
+    open=$(cat response | jq ".Data["$day"].open")
+    close=$(cat response | jq ".Data["$day"].close")
+    time=$(cat response | jq ".Data["$day"].time")
+    average=$[ (high + low) / 2 ]
+    echo $i","$high","$low","$open","$close","$average","$time >> data/$i
+    day=$[ day + 1 ]
+  done
+  echo "done with "$i
+done
+
+echo "done!"
+
