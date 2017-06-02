@@ -40,7 +40,8 @@ do
     open=$(cat response | jq ".Data["$day"].open")
     close=$(cat response | jq ".Data["$day"].close")
     time=$(cat response | jq ".Data["$day"].time")
-    average=$[ (high + low) / 2 ]
+    # CANT SUM DECIMAL VALUES IN BASH
+    # average=$[ (high + low) / 2 ] 
     echo $i","$high","$low","$open","$close","$average","$time >> data/$i
     day=$[ day + 1 ]
   done
