@@ -22,7 +22,7 @@ currencies=('ETH' 'XRP' 'LTC' 'XEM' 'DASH'  'XMR' 'STR' 'STEEM' 'REP' 'GNT' 'SJC
 for i in $currencies
 do
   # set headers on output text files
-  echo "currency,high,low,open,close,average,timestamp" > data/$i
+  echo "currency,close,timestamp" > data/$i
   # cant convert BTC -> BTC, need to compare to USD
   if [ $i = 'BTC' ]
   then
@@ -35,14 +35,12 @@ do
   while [ $day -lt $limit ]
   do
     # grab all the data
-    high=$(cat response | jq ".Data["$day"].high")
-    low=$(cat response | jq ".Data["$day"].low")
-    open=$(cat response | jq ".Data["$day"].open")
+    # high=$(cat response | jq ".Data["$day"].high")
+    # low=$(cat response | jq ".Data["$day"].low")
+    # open=$(cat response | jq ".Data["$day"].open")
     close=$(cat response | jq ".Data["$day"].close")
     time=$(cat response | jq ".Data["$day"].time")
-    # CANT SUM DECIMAL VALUES IN BASH
-    # average=$[ (high + low) / 2 ] 
-    echo $i","$high","$low","$open","$close","$average","$time >> data/$i
+    echo $i","$close","$time >> data/$i
     day=$[ day + 1 ]
   done
   echo "done with "$i
